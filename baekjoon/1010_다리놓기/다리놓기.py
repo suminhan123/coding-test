@@ -1,3 +1,5 @@
+#실버5: https://www.acmicpc.net/problem/1010
+
 test = int(input())
 
 def combination (n, m):

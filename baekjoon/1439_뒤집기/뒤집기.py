@@ -1,3 +1,5 @@
+#실버5: https://www.acmicpc.net/problem/1439
+
 s = input()
 result_zero = 0
 result_one = 0
