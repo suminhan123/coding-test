@@ -1,21 +1,31 @@
 # https://school.programmers.co.kr/learn/courses/30/lessons/178870
     
-def solution (sequence, k):
+def solution(sequence, k):
   result = []
-  for i in range(len(sequence)):
-    if sequence[i] == k:
-      result.append([i, i])
-      break
-    for j in range(i+1, len(sequence)):
-      num = sum(sequence[i: j+1])
-      if num == k:
-        result.append([i, j])
-        continue
-      elif num > k:
+  sum = 0
+  lidx = 0
+  ridx = -1
+    
+  while True:
+    if sum < k:
+      ridx += 1
+      if ridx >= len(sequence):
         break
-  arr = sorted(result, key = lambda x: (x[1]-x[0], x[0]))
-  return arr[0]
-  
+
+      sum += sequence[ridx]
+    else:
+      sum -= sequence[lidx]
+      if lidx >= len(sequence):
+        break
+      lidx += 1
+    if sum == k:
+      result.append([lidx, ridx])
+    
+  result.sort(key=lambda x: (x[1]-x[0], x[0]))
+  return result[0]
+
+
+
 sequence = [2, 2, 2, 2, 2]
 k = 6
 print(solution(sequence, k))
