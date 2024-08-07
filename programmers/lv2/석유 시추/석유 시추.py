@@ -14,11 +14,15 @@ def solution(land):
     q.append((i, j))
     land[i][j] = 0
 
-    tempy = j
-    oil = 1
+    minY = j
+    maxY = j
+    oil = 0
 
     while q:
       x, y = q.popleft()
+      oil+= 1
+      minY = min(minY, y)
+      maxY = max(maxY, y)
 
       for i in range(4):
         nx = x + dx[i]
@@ -27,18 +31,16 @@ def solution(land):
         if nx >=0 and ny >= 0 and nx < n and ny < m:
           if land[nx][ny] == 1:
             q.append((nx, ny))
-            oil += 1
-            if ny >= tempy:
-              tempy = ny
             land[nx][ny] = 0
-    return [tempy, oil]
+    for i in range(minY, maxY+1):
+      result[i] += oil
+    
 
   for i in range(n):
     for j in range(m):
       if land[i][j] == 1:
-        rightY, oil = bfs(i, j)
-        for oilX in range(j, rightY + 1):
-          result[oilX] += oil
+        bfs(i, j)
+
 
   return max(result)
 
