@@ -9,12 +9,19 @@ const callings = ["kai", "kai", "mine", "mine"];
 // mumu kai mine seo poe : result
 
 const solution = (players, callings) => {
+  const playerOrder = {};
+  for (let i = 0; i < players.length; i++) {
+    playerOrder[players[i]] = i;
+  }
   for (const calling of callings) {
-    const idx = players.indexOf(calling);
+    const idx = playerOrder[calling];
+
     const before = players[idx - 1];
-    const after = players[idx];
-    players[idx - 1] = after;
+    players[idx - 1] = players[idx];
     players[idx] = before;
+
+    playerOrder[before] = idx;
+    playerOrder[calling] = idx - 1;
   }
   return players;
 };
