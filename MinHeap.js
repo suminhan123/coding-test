@@ -4,69 +4,63 @@
 
 class MinHeap {
   constructor() {
-    this.heap = [];
-  }
-  size() {
-    return this.heap.length;
-  }
-  swap(idx1, idx2) {
-    [this.heap[idx1], this.heap[idx2]] = [this.heap[idx2], this.heap[idx1]];
+    this.heap = [null];
   }
 
-  empty() {
-    return this.heap.length === 0;
+  size() {
+    return this.heap.length - 1;
+  }
+
+  getMin() {
+    return this.heap[1] ? this.heap[1] : null;
+  }
+
+  swap(a, b) {
+    [this.heap[a], this.heap[b]] = [this.heap[b], this.heap[a]];
   }
 
   push(value) {
     this.heap.push(value);
-    this.bubbleup();
-  }
+    let curIdx = this.heap.length - 1;
+    let parIdx = (curIdx / 2) >> 0;
 
-  bubbleup() {
-    // 새로운 노드가 추가된 위치
-    let index = this.heap.length - 1;
-    while (index > 0) {
-      const parentIdx = Math.floor((index - 1) / 2);
-      if (this.heap[parentIdx][0] <= this.heap[index][0]) break;
-      this.swap(parentIdx, index);
-      index = parentIdx;
+    while (curIdx > 1 && this.heap[parIdx] > this.heap[curIdx]) {
+      this.swap(parIdx, curIdx);
+      curIdx = parIdx;
+      parIdx = (curIdx / 2) >> 0;
     }
-  }
-
-  peek() {
-    return this.heap[0];
   }
 
   pop() {
-    if (this.empty()) return;
+    const min = this.heap[0];
+    if (this.heap.length <= 2) this.heap = [null];
+    else this.heap[1] = this.heap.pop();
 
-    const value = this.peek();
-    this.swap(0, this.heap.length - 1);
-    this.heap.pop();
-    this.bubbledown();
-    return value;
-  }
+    let curIdx = 1;
+    let leftIdx = curIdx * 2;
+    let rightIdx = curIdx * 2 + 1;
 
-  bubbledown() {
-    const root = this.peek();
-    const n = this.heap.length;
-    let idx = 0;
-    // 현재 index의 오른쪽 자식도 존재할 때까지
-    while (2 * idx + 1 < n) {
-      const leftIdx = 2 * idx + 1;
-      const rightIdx = leftIdx + 1;
-      const smallerIdx =
-        rightIdx < n && this.heap[rightIdx][0] < this.heap[leftIdx][0]
-          ? rightIdx
-          : leftIdx;
-
-      if (root[0] > this.heap[smallerIdx][0]) {
-        this.swap(idx, smallerIdx);
-        idx = smallerIdx;
-      } else {
-        break;
+    if (!this.heap[leftIdx]) return min;
+    if (!this.heap[rightIdx]) {
+      if (this.heap[leftIdx] < this.heap[curIdx]) {
+        this.swap(leftIdx, curIdx);
       }
+      return min;
     }
+
+    while (
+      this.heap[leftIdx] < this.heap[curIdx] ||
+      this.heap[rightIdx] < this.heap[curIdx]
+    ) {
+      const minIdx =
+        this.heap[leftIdx] > this.heap[rightIdx] ? rightIdx : leftIdx;
+      this.swap(minIdx, curIdx);
+      curIdx = minIdx;
+      leftIdx = curIdx * 2;
+      rightIdx = curIdx * 2 + 1;
+    }
+
+    return min;
   }
 }
 

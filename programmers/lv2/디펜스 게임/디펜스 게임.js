@@ -2,43 +2,90 @@
 // 보유한 n명으로 연속되는 적의 공격을 마는 게임
 // 무적권 스킬 : 병사의 소목 없이 한 라운드의 공격을 막을 수 있다
 // 해당 스킬은 최대 k번 사용 가능
-// 최대한 많은 라운드를 진행하고 싶다!!
+// 최대한 많은 라운드를 진행하고 싶다
+class MinHeap {
+  constructor() {
+    this.heap = [null];
+  }
 
-const solution = (n, k, enemy) => {
+  size() {
+    return this.heap.length - 1;
+  }
+
+  getMin() {
+    return this.heap[1] ? this.heap[1] : null;
+  }
+
+  swap(a, b) {
+    [this.heap[a], this.heap[b]] = [this.heap[b], this.heap[a]];
+  }
+
+  push(value) {
+    this.heap.push(value);
+    let curIdx = this.heap.length - 1;
+    let parIdx = (curIdx / 2) >> 0;
+
+    while (curIdx > 1 && this.heap[parIdx] > this.heap[curIdx]) {
+      this.swap(parIdx, curIdx);
+      curIdx = parIdx;
+      parIdx = (curIdx / 2) >> 0;
+    }
+  }
+
+  pop() {
+    const min = this.heap[0];
+    if (this.heap.length <= 2) this.heap = [null];
+    else this.heap[1] = this.heap.pop();
+
+    let curIdx = 1;
+    let leftIdx = curIdx * 2;
+    let rightIdx = curIdx * 2 + 1;
+
+    if (!this.heap[leftIdx]) return min;
+    if (!this.heap[rightIdx]) {
+      if (this.heap[leftIdx] < this.heap[curIdx]) {
+        this.swap(leftIdx, curIdx);
+      }
+      return min;
+    }
+
+    while (
+      this.heap[leftIdx] < this.heap[curIdx] ||
+      this.heap[rightIdx] < this.heap[curIdx]
+    ) {
+      const minIdx =
+        this.heap[leftIdx] > this.heap[rightIdx] ? rightIdx : leftIdx;
+      this.swap(minIdx, curIdx);
+      curIdx = minIdx;
+      leftIdx = curIdx * 2;
+      rightIdx = curIdx * 2 + 1;
+    }
+
+    return min;
+  }
+}
+const solution = (n, k, enemy = [4, 2, 4, 5, 3, 3, 1]) => {
+  let hp = new MinHeap();
   let result = 0;
-  // bfs로 완전 탐색
-  let q = []; // 큐 : [현재 라운드, 무적권 개수, 남은 병사]
-  // 첫 라운드에 무적권을 쓰는 경우
-  if (k > 0) {
-    q.push([1, k - 1, n]);
-  }
-  // 첫 라운드에 병사를 쓰는 경우
-  if (enemy[0] <= n) {
-    q.push([1, k, n - enemy[0]]);
-  }
-  while (q.length) {
-    const [round, skill, remain] = q.shift();
-    // console.log(round, "번째", skill, remain);
-    if (k >= enemy.length) {
-      result = enemy.length;
-      break;
-    }
-    // 남은 병사가 없는 경우
-    if (skill === 0 && enemy[round] > remain) {
-      result = result < round ? round : result;
+  for (let i = 0; i < enemy.length; i++) {
+    // 처음에 힙을 무적권 스킬 개수 만큼 채우기
+    if (hp.size() < k) {
+      hp.push(enemy[i]);
+      result++;
     } else {
-      // 현재 라운드에 무적권을 쓰는 경우
-      if (skill > 0) {
-        q.push([round + 1, skill - 1, remain]);
-      }
+      let min = hp.getMin();
 
-      // 병사를 쓰는 경우
-      if (remain > enemy[round]) {
-        q.push([round + 1, skill, remain - enemy[round]]);
+      // 힙 안의 최소값보다 큰 경우
+      if (enemy[i] > min) {
+        n -= min;
+        hp.pop();
+        hp.push(enemy[i]);
+      } else {
+        n -= enemy[i];
       }
+      n >= 0 && result++;
     }
   }
-
   return result;
 };
 const n = 7;
