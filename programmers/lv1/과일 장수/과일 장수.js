@@ -7,9 +7,8 @@
 const solution = (k, m, score) => {
   let result = 0;
   score.sort((a, b) => b - a);
-  while (score.length >= m) {
-    const deleteScore = score.splice(0, m);
-    result += Math.min(...deleteScore) * m;
+  for (let i = 0; i <= score.length - m; i += m) {
+    result += score[i + m - 1] * m;
   }
   return result;
 };
@@ -18,3 +17,13 @@ const m = 3; // 한 상자에 들어가는 사과의 개수
 const score = [4, 1, 2, 2, 4, 4, 4, 4, 1, 2, 4, 2];
 
 console.log(solution(k, m, score));
+
+// 좋은 풀이
+let answer = 0;
+const sortedScore = score
+  .slice()
+  .sort((a, b) => a - b)
+  .slice(score.length % m);
+for (let i = 0; i < sortedScore.length; i += m) {
+  answer += sortedScore[i] * m;
+}
