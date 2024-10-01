@@ -4,43 +4,14 @@
 n = int(input())
 arr = list(map(int, input().split(" ")))
 
-def get_permutations (arr, n):
-  result = []
-  visited = [0 for _ in range(len(arr))]
-  def permutations (temp, visited):
-    if len(temp) == n:
-      result.append(temp[:])
-      return
-    for i in range(len(arr)):
-      if not visited[i]:
-        temp.append(arr[i])
-        visited[i] = 1
-        permutations(temp, visited)
-        temp.pop()
-        visited[i] = 0
-  permutations([], visited)
-  return result
-
-person = list(map(lambda x: x+1, range(n)))
-
-def left_taller_person (arr, idx):
-  result = 0
-  for i in range(idx):
-    if arr[i] > arr[idx]:
-      result += 1
-  return result
-
-for perm in get_permutations(person, n):
+result = [0] * n
+for i in range(n):
   cnt = 0
-  for i in range(n):
-    idx = perm.index(i+1)
-    if arr[i] != left_taller_person(perm, idx):
+  for j in range(n):
+    if cnt == arr[i] and result[j] == 0:
+      result[j] = i+1
       break
-    else:
-      cnt += 1
-  if cnt == n:
-    result = perm
-    break
+    elif result[j] == 0:
+      cnt+= 1
 
-
-print(result)
+print(" ".join(map(str, result)))
