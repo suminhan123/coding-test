@@ -3,17 +3,22 @@
 
 
 def solution (n):
-  start = 0
+  start = 1
   end = n
   result = 0
 
   while start <= end:
     mid = (start + end) // 2
-    jump = 0
-    temp = 1
-    for _ in range(mid):
-      jump += temp
-      temp += 1
+    
+
+    # 어찌보면 공차가 1인 등차수열의 합을 for문을 사용해서 시간 초과
+    # => 등차 수열의 합 공식을 활용해보자
+    # temp = 1
+    # for _ in range(mid):
+    #   jump += temp
+    #   temp += 1
+
+    jump = (mid * (mid + 1)) // 2
 
     if jump == n:
       result = mid
