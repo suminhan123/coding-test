@@ -1,4 +1,6 @@
 # https://www.acmicpc.net/problem/25195
+
+# 런타임 에러 (RecursionError) => DFS, 백트래킹의 경우
 import sys
 sys.setrecursionlimit(10 ** 6)
 input = sys.stdin.readline
@@ -18,9 +20,12 @@ def search (start):
   global result
   if len(graph[start]) == 0:
     temp = False
-    for item in ans:
-      if item in fans:
-        temp = True 
+    # ans for문을 돌리면서 다 확인할 필요 X 
+    # -> fans for 문을 돌면서 존재 여부 확인 : 시간 초과 해결
+    for fan in fans:
+      if fan in ans:
+        temp = True
+        break
     result = temp
     # print(" ".join(map(str, ans)), temp)
     return
