@@ -9,36 +9,17 @@ const texts = fs.readFileSync(file).toString().trim().split("\n");
 const solution = (n, graph) => {
   graph.sort((a, b) => a - b);
 
-  let ans = [];
-  let arrSum = [];
-  const search = (start) => {
-    if (ans.length === n) {
-      return;
-    }
-    for (let i = start; i < n; i++) {
-      ans.push(graph[i]);
-      const ansSum = ans.reduce((prev, cur) => (cur += prev), 0);
-      if (!arrSum.includes(ansSum)) {
-        arrSum.push(ansSum);
-      }
+  let end = 0;
 
-      search(i + 1);
-      ans.pop();
-    }
-  };
-  search(0);
-  arrSum.sort((a, b) => a - b);
-  let result = 0;
-  for (let i = 1; i < Infinity; i++) {
-    if (!arrSum.includes(i)) {
-      result = i;
-      break;
+  for (let i = 0; i < n; i++) {
+    if (graph[i] > end + 1) {
+      return end + 1;
+    } else {
+      end += graph[i];
     }
   }
-  return result;
+  return end + 1;
 };
-
 const n = +texts[0];
 let graph = texts[1].split(" ").map(Number);
-
 console.log(solution(n, graph));
