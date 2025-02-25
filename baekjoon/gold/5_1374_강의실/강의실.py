@@ -1,20 +1,46 @@
 # https://www.acmicpc.net/problem/1374
-# n = 8
-# graph = [(15, 21), (20, 25), (3, 8), (2, 14), (6, 27), (7, 13), (12, 18), (6, 20)]
 
 n = int(input())
 graph = []
+end_num = 0
 for _ in range(n):
-  n, x, y = map(int, input().split())
-  graph.append((x, y))
-graph.sort()
-max_time = max(i[1] for i in graph) 
-INF = int(1e9)
+  x, y, z = map(int, input().split())
+  graph.append([x, y, z])
+  end_num = max(end_num, z)
 
-dp = [0] * (max_time + 1)
+dp = [0] * (end_num + 1)
 
 for value in graph:
-  x, y = value
-  for i in range(x, y+1):
-    dp[i] += 1
+  num, start, end = value
+
+  for j in range(start, end):
+    dp[j] += 1
 print(max(dp))
+
+
+## 결과 : 메모리 초과
+
+# 좋은 풀이
+from heapq import heappop, heappush
+# 최소힙 사용해 불필요한 연산 및 메모리 사용 X
+
+
+graph = []
+n = int(input())
+for _ in range(n):
+  num, start, end = map(int, input().split())
+  graph.append([start, end])
+
+graph.sort(key=lambda x: x[0])
+
+q = []
+heappush(q, graph[0][1]) 
+
+for i in range(1, n):
+  if graph[i][0] < q[0]:
+    heappush(q, graph[i][1])
+  else:
+    heappop(q)
+    heappush(q, graph[i][1])
+
+print(len(q))
